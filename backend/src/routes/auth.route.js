@@ -1,7 +1,6 @@
 import express from 'express';
 import { check, body } from 'express-validator';
-import { ERole } from '../generated/prisma/index.js';
-import { register, login, getMe } from '../controllers/auth.controller.js';
+import { register, login, getMe, sendOtp } from '../controllers/auth.controller.js';
 import { authMiddleware } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
@@ -9,11 +8,9 @@ const router = express.Router();
 router.post(
     '/register',
     [
-        check('name', 'Name must not be empty').not().isEmpty().trim().escape(),
         check('email', 'Please provide a valid email').isEmail().normalizeEmail(),
+        check('otp', 'OTP must be 6 digits').isLength({ min: 6, max: 6 }).isNumeric(),
         check('password', 'Password must be at least 6 characters').isLength({ min: 6 }),
-        check('phoneNumber', 'Phone number must not be empty').not().isEmpty().trim().escape(),
-        body('role').optional().isIn(Object.values(ERole)).withMessage('Invalid role'),
     ],
     register
 );
@@ -31,6 +28,16 @@ router.get(
     '/me',
     authMiddleware,
     getMe
+);
+
+router.post(
+    '/send-otp',
+    [
+        check('email', 'Please provide a valid email').isEmail().normalizeEmail(),
+        check('name', 'Name must not be empty').not().isEmpty().trim().escape(),
+        check('phoneNumber', 'Phone number must not be empty').not().isEmpty().trim().escape(),
+    ],
+    sendOtp
 );
 
 export default router;

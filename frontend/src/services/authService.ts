@@ -3,6 +3,55 @@ import type { User } from '../types/auth';
 
 const API_URL = 'http://localhost:8081/api/auth';
 
+interface ApiErrorData {
+    message: string;
+    errors?: { msg: string }[];
+}
+
+// --- Send OTP ---
+export interface SendOtpData {
+    name: string;
+    email: string;
+    phoneNumber: string;
+}
+interface SendOtpResponse {
+    message: string;
+}
+export const sendOtpRequest = async (otpData: SendOtpData): Promise<SendOtpResponse> => {
+    try {
+        const response = await axios.post<SendOtpResponse>(`${API_URL}/send-otp`, otpData);
+        return response.data;
+    } catch (error: unknown) {
+        if (isAxiosError<ApiErrorData>(error) && error.response) {
+            throw error.response.data;
+        }
+        throw { message: 'An error occurred while sending OTP.' };
+    }
+};
+
+// --- Verify OTP & Register ---
+export interface VerifyRegisterData {
+    email: string;
+    otp: string;
+    password: string;
+}
+interface VerifyRegisterResponse {
+    message: string;
+    token: string;
+    user: User;
+}
+export const verifyAndRegisterUser = async (verifyData: VerifyRegisterData): Promise<VerifyRegisterResponse> => {
+    try {
+        const response = await axios.post<VerifyRegisterResponse>(`${API_URL}/register`, verifyData);
+        return response.data;
+    } catch (error: unknown) {
+        if (isAxiosError<ApiErrorData>(error) && error.response) {
+            throw error.response.data;
+        }
+        throw { message: 'An error occurred during verification and registration.' };
+    }
+}
+
 export interface RegisterData {
     name: string;
     email: string;
@@ -14,11 +63,6 @@ export interface RegisterData {
 interface RegisterResponse {
     message: string;
     user: User;
-}
-
-interface ApiErrorData {
-    message: string;
-    errors?: { msg: string }[];
 }
 
 export const registerUser = async (userData: RegisterData): Promise<RegisterResponse> => {

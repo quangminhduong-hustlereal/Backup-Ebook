@@ -122,7 +122,11 @@ exports.Prisma.UserScalarFieldEnum = {
   status: 'status',
   role: 'role',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  otpCode: 'otpCode',
+  otpExpiry: 'otpExpiry',
+  isEmailVerified: 'isEmailVerified',
+  googleId: 'googleId'
 };
 
 exports.Prisma.SellerScalarFieldEnum = {
