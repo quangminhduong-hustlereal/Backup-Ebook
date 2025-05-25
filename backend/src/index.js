@@ -5,6 +5,8 @@ import { PrismaClient } from './generated/prisma/index.js';
 import authRoutes from './routes/auth.route.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import passport from 'passport';
+import './config/passportSetup.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,6 +26,10 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Passport setup
+app.use(passport.initialize());
+
+// Routes
 app.get('/api', (req, res) => {
   res.status(200).json({ message: 'Welcome to Book-Nest API!' });
 });
@@ -31,6 +37,7 @@ app.use('/api/auth', authRoutes);
 
 const PORT = process.env.PORT || 5001;
 
+// Start server
 const startServer = async () => {
     try {
         console.log("Connecting to the database...");

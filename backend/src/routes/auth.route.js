@@ -2,8 +2,48 @@ import express from 'express';
 import { check, body } from 'express-validator';
 import { register, login, getMe, sendOtp } from '../controllers/auth.controller.js';
 import { authMiddleware } from '../middleware/auth.middleware.js';
+import passport from 'passport';
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
+
+router.get(
+    '/google',
+    passport.authenticate('google', {
+        scope: ['profile', 'email'],
+        session: false,
+        prompt: 'select_account'
+    })
+);
+
+router.get(
+    '/google/callback',
+    passport.authenticate('google', {
+        failureRedirect: `${process.env.FRONTEND_URL}/login?error=google_failed`,
+        session: false,
+    }),
+    (req, res) => {
+        if (!req.user) {
+            return res.redirect(`${process.env.FRONTEND_URL}/login?error=auth_failed`);
+        }
+
+        const payload = {
+            user: {
+                id: req.user.id,
+                email: req.user.email,
+                role: req.user.role,
+            },
+        };
+
+        const token = jwt.sign(
+            payload,
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRES_IN || '24h' }
+        );
+
+        res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${token}`);
+    }
+);
 
 router.post(
     '/register',

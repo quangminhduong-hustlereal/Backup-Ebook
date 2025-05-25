@@ -4,6 +4,7 @@ import { sendOtpRequest, verifyAndRegisterUser } from '../services/authService';
 import { useAuth } from '../context/AuthContext';
 import { FiUser, FiMail, FiPhone, FiKey, FiShield, FiLogIn, FiAlertCircle, FiCheckCircle, FiArrowLeft } from 'react-icons/fi';
 import type { User } from '../types/auth';
+import Footer from '../components/Footer';
 
 interface ApiError {
     message: string;
@@ -231,38 +232,39 @@ const RegisterPage = () => {
     );
 
     return (
-        <div className="min-h-screen flex flex-col py-12 sm:px-6 lg:px-8">
-            <div className="sm:mx-auto sm:w-full sm:max-w-md"></div>
-            <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-white py-8 px-4 shadow-2xl rounded-xl sm:px-10">
-                    {error && (
-                        <div className="mb-4 p-3 rounded-md bg-red-50 border border-red-200">
-                            <div className="flex items-center">
-                                <FiAlertCircle className="h-5 w-5 text-red-400 mr-2" />
-                                <p className="text-sm text-red-700">{error}</p>
+        <div className="h-screen flex flex-col justify-between">
+            {/* Main content container */}
+            <div className="flex-1 flex flex-col items-center justify-center px-6">
+                <div className="w-full max-w-md">
+                    <div className="bg-white py-8 px-4 shadow-2xl rounded-xl sm:px-10">
+                        {error && (
+                            <div className="mb-4 p-3 rounded-md bg-red-50 border border-red-200">
+                                <div className="flex items-center">
+                                    <FiAlertCircle className="h-5 w-5 text-red-400 mr-2" />
+                                    <p className="text-sm text-red-700">{error}</p>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                    {success && (
-                         <div className="mb-4 p-3 rounded-md bg-green-50 border border-green-200">
-                            <div className="flex items-center">
-                                <FiCheckCircle className="h-5 w-5 text-green-400 mr-2" />
-                                <p className="text-sm text-green-700">{success}</p>
+                        )}
+                        {success && (
+                             <div className="mb-4 p-3 rounded-md bg-green-50 border border-green-200">
+                                <div className="flex items-center">
+                                    <FiCheckCircle className="h-5 w-5 text-green-400 mr-2" />
+                                    <p className="text-sm text-green-700">{success}</p>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                    {step === 1 ? renderStep1() : renderStep2()}
+                        )}
+                        {step === 1 ? renderStep1() : renderStep2()}
+                    </div>
+                    <p className="mt-6 text-center text-sm text-gray-600">
+                        Already have an account?{' '}
+                        <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+                            Login here
+                        </Link>
+                    </p>
                 </div>
-                 <p className="mt-6 text-center text-sm text-gray-600">
-                    Already have an account?{' '}
-                    <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
-                        Login here
-                    </Link>
-                </p>
-                 <p className="mt-4 text-center text-xs text-gray-500">
-                    Book-Nest Register &copy; {new Date().getFullYear()}
-                </p>
             </div>
+
+            <Footer type="register" />
         </div>
     );
 };
